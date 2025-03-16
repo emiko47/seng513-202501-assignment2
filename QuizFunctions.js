@@ -17,6 +17,8 @@ class Quiz {
             return;
         }
 
+        console.log(this.questions);
+
         this.score = 0;
         this.questionIterator = this.questionGenerator(); // Initialize generator
         this.questionIterator.next(); // Start quiz
@@ -87,6 +89,7 @@ async function fetchQuestions(category, difficulty) {
 // SECTION 3: UI & Event Listeners
 // ========================
 function startQuiz() {
+    console.log("Starting quiz...");
     const usernameInput = document.getElementById("username").value.trim();
     if (!usernameInput) {
         alert("Please enter a username before starting the quiz.");
@@ -102,4 +105,6 @@ function startQuiz() {
 }
 
 // Attach event listener to start button
-document.getElementById("start_button").addEventListener("click", startQuiz);
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("start-btn").addEventListener("click", startQuiz);
+});
