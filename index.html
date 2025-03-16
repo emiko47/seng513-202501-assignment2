@@ -1,10 +1,49 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <link rel="stylesheet" href="styles.css">
-    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Server JS Example</title>
 </head>
-
 <body>
-    
+    <script src="Quiz.js"></script>
+
+    <h1>Quiz Trivia!</h1>
+    <p>Click the button to start the quiz!</p>
+    <button id="start_button"></button>
+
+
+
+    <label for="fname">Enter your username:</label><br>
+    <input type="text" id="username" name="username" value=""><br>
+
+
+    <label for="categories">Choose a category:</label>
+
+    <select name="categories" id="categories">
+        <option value="Sports">Sports</option>
+        <option value="Science">Science</option>
+        <option value="Geography">Geography</option>
+        <option value="Mathematics">Mathematics</option>
+        <option value="Entertainment: Film">Entertainment: Film</option>
+    </select>
+
+
+    <!-- quiz will be displayed here -->
+    <div id="quiz">
+
+        <p id="question_here"></p>
+
+
+        <button id="option1"></button>
+        <button id="option2" ></button>
+        <button id="option3"></button>
+        <button id="option4"></button>
+
+
+        <button id="next">Next</button>
+        <button id="submit">Submit</button>
+
+    </div>
 </body>
 </html>
