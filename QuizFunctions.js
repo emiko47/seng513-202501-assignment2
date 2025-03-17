@@ -8,6 +8,7 @@ class Quiz {
         this.questions = [];//quiz object will beninitiated with an array of question objects ( question object included question itself and answers)
         this.score = 0;//global score variable
         this.questionIterator = null; // Generator instance
+        this.userAnswers = []; // Store user answers
     }
 
     async start(category, difficulty) {//this start funtction simply calls the fetchQuestions function and initializes the question generator.
@@ -28,7 +29,9 @@ class Quiz {
         for (let i = 0; i < this.questions.length; i++) {
             yield this.displayQuestion(i);
         }
-        alert(`Quiz complete! Your final score is: ${this.score}`);
+
+        this.showFinalResults();
+        
     }
 
     displayQuestion(index) {
@@ -40,16 +43,60 @@ class Quiz {
         document.querySelectorAll("#quiz button").forEach((btn, idx) => {
             btn.style.display = idx < options.length ? "inline-block" : "none";
             btn.innerText = options[idx] || "";
+            btn.disabled = false; // Re-enable buttons for the next question
             btn.onclick = () => this.checkAnswer(options[idx], question.correctAnswer);
         });
+
+        document.getElementById("next").style.display = "none"; // Hide at the start of each question
+
     }
 
     checkAnswer(selected, correctAnswer) {
+        let feedbackElement = document.createElement("p");
+        
         if (selected === correctAnswer) {
             this.score++;
+            feedbackElement.innerHTML = "<span style='color: green; font-weight: bold;'>Correct!</span>";
+        } else {
+            feedbackElement.innerHTML = `<span style='color: red; font-weight: bold;'>Incorrect! The correct answer is: ${correctAnswer}</span>`;
         }
-        this.questionIterator.next(); // Move to next question
+    
+        // Append feedback below the question
+        document.getElementById("question_here").appendChild(feedbackElement);
+    
+        // Store user answer for review at the end
+        this.userAnswers.push({ 
+            question: document.getElementById("question_here").innerText,
+            selected: selected,
+            correctAnswer: correctAnswer
+        });
+    
+        // Disable all answer buttons
+        document.querySelectorAll("#quiz button").forEach(btn => {
+            btn.disabled = true;
+        });
+    
+        // Show the "Next" button
+        document.getElementById("next").style.display = "inline-block";
+    
+        // Update score display
+        document.getElementById("score_display").innerText = `Score: ${this.score}`;
     }
+    
+    
+    showFinalResults() {
+        let reviewHTML = "<h3>Review Your Answers:</h3>";
+        this.userAnswers.forEach((q, i) => {
+            reviewHTML += `<p><strong>Q${i + 1}:</strong> ${q.question}<br>
+                            <span style="color: ${q.selected === q.correctAnswer ? 'green' : 'red'}">
+                            Your Answer: ${q.selected}</span><br>
+                            Correct Answer: ${q.correctAnswer}</p><hr>`;
+        });
+    
+        document.getElementById("quiz").innerHTML = reviewHTML + `<h2>Quiz Complete! Your final score is: ${this.score}</h2>`;
+    }
+    
+    
 }
 
 // Instantiate quiz globally
@@ -108,3 +155,15 @@ function startQuiz() {
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("start-btn").addEventListener("click", startQuiz);
 });
+
+ddocument.getElementById("next").addEventListener("click", function () {
+    if (quiz.questionIterator) {
+        let next = quiz.questionIterator.next(); // Move to the next question
+        if (next.done) { 
+            quiz.showFinalResults();  // Show final review when quiz is done
+        } else {
+            document.getElementById("next").style.display = "none"; // Hide "Next" button again until answer is chosen
+        }
+    }
+});
+

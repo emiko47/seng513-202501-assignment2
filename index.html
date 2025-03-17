@@ -4,18 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Server JS Example</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <script src="QuizFunctions.js"></script>
 
     <h1>Quiz Trivia!</h1>
     <p>Click the button to start the quiz!</p>
-    <button id="start-btn">Start</button>
+    
+   
 
 
 
     <label for="fname">Enter your username:</label><br>
     <input type="text" id="username" name="username" value=""><br>
+
+    <button id="start-btn">Start</button>
+    <button id="next" style="display: none;">Next</button>
+
+    <p id="score_display">Score: 0</p>
+
+
 
 
     <label for="categories">Choose a category:</label>

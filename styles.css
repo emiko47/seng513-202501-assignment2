@@ -1,0 +1,45 @@
+/* General styling */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  text-align: center;
+}
+
+/* Quiz Container */
+#quiz {
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+/* Buttons */
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  margin: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Score Display */
+#score_display {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Question Text */
+#question_here {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
