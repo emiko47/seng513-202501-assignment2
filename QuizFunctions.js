@@ -47,7 +47,7 @@ class Quiz {
             btn.style.display = idx < options.length ? "inline-block" : "none";
             btn.innerText = options[idx] || "";
             btn.disabled = false; 
-            btn.onclick = () => this.checkAnswer(options[idx], question.correctAnswer);
+            btn.onclick = () => checkAnswer.apply(this, [options[idx], question.correctAnswer]);
         });
 
         document.getElementById("next").style.display = "none"; // Hide at the start of each question
