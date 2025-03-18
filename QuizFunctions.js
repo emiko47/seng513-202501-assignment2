@@ -34,6 +34,9 @@ class Quiz {
         
     }
 
+
+
+
     displayQuestion(index) {
         const question = this.questions[index];
         document.getElementById("question_here").innerHTML = question.text;
@@ -43,7 +46,7 @@ class Quiz {
         document.querySelectorAll("#quiz button").forEach((btn, idx) => {
             btn.style.display = idx < options.length ? "inline-block" : "none";
             btn.innerText = options[idx] || "";
-            btn.disabled = false; // Re-enable buttons for the next question
+            btn.disabled = false; 
             btn.onclick = () => this.checkAnswer(options[idx], question.correctAnswer);
         });
 
@@ -51,53 +54,95 @@ class Quiz {
 
     }
 
+
+
     checkAnswer(selected, correctAnswer) {
-        let feedbackElement = document.createElement("p");
+        var feedbackElement = document.createElement("div");
+        feedbackElement.style.fontWeight = "bold";
+        feedbackElement.style.marginTop = "10px";
+        feedbackElement.style.padding = "5px";
+        feedbackElement.style.borderRadius = "5px";
+        feedbackElement.style.display = "inline-block";
         
         if (selected === correctAnswer) {
             this.score++;
-            feedbackElement.innerHTML = "<span style='color: green; font-weight: bold;'>Correct!</span>";
+            feedbackElement.style.color = "green";
+            feedbackElement.style.backgroundColor = "#d4edda";  
+            feedbackElement.innerText = "✅ Correct!";
         } else {
-            feedbackElement.innerHTML = `<span style='color: red; font-weight: bold;'>Incorrect! The correct answer is: ${correctAnswer}</span>`;
+            feedbackElement.style.color = "red";
+            feedbackElement.style.backgroundColor = "#f8d7da"; 
+            feedbackElement.innerText = "❌ Incorrect! The correct answer is: " + correctAnswer;
         }
-    
-        // Append feedback below the question
-        document.getElementById("question_here").appendChild(feedbackElement);
-    
-        // Store user answer for review at the end
-        this.userAnswers.push({ 
-            question: document.getElementById("question_here").innerText,
+        
+        // Append feedback message below the question
+        var questionContainer = document.getElementById("question_here");
+        questionContainer.appendChild(feedbackElement);
+
+        // Save user's answer for review at the end of the quiz
+        this.userAnswers.push({
+            question: questionContainer.innerText,
             selected: selected,
             correctAnswer: correctAnswer
         });
-    
-        // Disable all answer buttons
-        document.querySelectorAll("#quiz button").forEach(btn => {
-            btn.disabled = true;
-        });
-    
-        // Show the "Next" button
-        document.getElementById("next").style.display = "inline-block";
-    
-        // Update score display
-        document.getElementById("score_display").innerText = `Score: ${this.score}`;
-    }
+
+        // Disable all answer buttons to prevent multiple selections
+             var answerButtons = document.querySelectorAll("#quiz button");
+            for (var i = 0; i < answerButtons.length; i++) {
+                 answerButtons[i].disabled = true;
+            }
+
+        // Display the "Next" button after answering
+            document.getElementById("next").style.display = "inline-block";
+
+        // Update and display the current score
+        document.getElementById("score_display").innerText = "Score: " + this.score;
+
+        }
     
     
     showFinalResults() {
-        let reviewHTML = "<h3>Review Your Answers:</h3>";
-        this.userAnswers.forEach((q, i) => {
-            reviewHTML += `<p><strong>Q${i + 1}:</strong> ${q.question}<br>
-                            <span style="color: ${q.selected === q.correctAnswer ? 'green' : 'red'}">
-                            Your Answer: ${q.selected}</span><br>
-                            Correct Answer: ${q.correctAnswer}</p><hr>`;
-        });
-    
-        document.getElementById("quiz").innerHTML = reviewHTML + `<h2>Quiz Complete! Your final score is: ${this.score}</h2>`;
+    var reviewContainer = document.createElement("div");
+    var resultHeading = document.createElement("h3");
+    resultHeading.innerText = "Review Your Answers:";
+    reviewContainer.appendChild(resultHeading);
+
+    // Loop through each user's answer and generate review content
+    for (var i = 0; i < this.userAnswers.length; i++) {
+        var questionReview = document.createElement("p");
+        var questionText = document.createElement("strong");
+        questionText.innerText = "Q" + (i + 1) + ": " + this.userAnswers[i].question;
+        
+        var userAnswer = document.createElement("span");
+        userAnswer.style.color = (this.userAnswers[i].selected === this.userAnswers[i].correctAnswer) ? "green" : "red";
+        userAnswer.innerHTML = "<br>Your Answer: " + this.userAnswers[i].selected;
+
+        var correctAnswer = document.createElement("span");
+        correctAnswer.innerHTML = "<br>Correct Answer: " + this.userAnswers[i].correctAnswer;
+
+        // Append question details
+        questionReview.appendChild(questionText);
+        questionReview.appendChild(userAnswer);
+        questionReview.appendChild(correctAnswer);
+        
+        reviewContainer.appendChild(questionReview);
+        reviewContainer.appendChild(document.createElement("hr"));
     }
-    
+
+    // Final score display
+    var finalScore = document.createElement("h2");
+    finalScore.innerText = "Quiz Complete! Your final score is: " + this.score;
+    reviewContainer.appendChild(finalScore);
+
+    // Replace the quiz container with the final review
+    var quizContainer = document.getElementById("quiz");
+    quizContainer.innerHTML = "";  // Clear previous content
+    quizContainer.appendChild(reviewContainer);
+}
+
     
 }
+
 
 // Instantiate quiz globally
 const quiz = new Quiz();
@@ -156,14 +201,22 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("start-btn").addEventListener("click", startQuiz);
 });
 
-ddocument.getElementById("next").addEventListener("click", function () {
-    if (quiz.questionIterator) {
-        let next = quiz.questionIterator.next(); // Move to the next question
-        if (next.done) { 
-            quiz.showFinalResults();  // Show final review when quiz is done
-        } else {
-            document.getElementById("next").style.display = "none"; // Hide "Next" button again until answer is chosen
-        }
+document.addEventListener("DOMContentLoaded", function () {
+    let nextButton = document.getElementById("next");
+    if (nextButton) {
+        nextButton.addEventListener("click", function () {
+            if (!quiz.questionIterator) {
+                return; // Exit early if quiz is not initialized
+            }
+    
+            var nextQuestion = quiz.questionIterator.next(); // Move to the next question
+            
+            if (nextQuestion.done) { 
+                quiz.showFinalResults(); // Show final review when quiz is done
+            } else {
+                nextButton.style.display = "none"; // Hide "Next" button again until an answer is chosen
+            }
+        });
     }
+    
 });
-
